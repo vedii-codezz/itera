@@ -25,11 +25,11 @@ Existing [foundation plan](docs/implementation-plan.md), [Phase 3 plan](docs/sup
 
 ## Current scope
 
-**Phases 1–4 are implemented.** All six generators now power the interactive React playground: full playback controls, snapshot-driven sorting/search/Kadane SVGs, synchronized registry pseudocode, deterministic explanations, algorithm-specific metrics, results, and complexity information. Race Mode and the educational library remain deferred.
+**Phases 1–5 are implemented.** All six generators now power the interactive React playground: full playback controls, snapshot-driven sorting/search/Kadane SVGs, synchronized registry pseudocode, deterministic explanations, algorithm-specific metrics, results, and complexity information. Race Mode compares two sorting algorithms with one input and a paired timeline. The educational library remains Phase 6.
 
 The original responsive shell, branding, themes, validation, eight input presets, and reset remain in place. Desktop and mobile Chrome browser verification is covered by the repeatable Playwright suite. Screenshots are included below.
 
-Source reconciliation on 2026-11-08 confirms this implemented scope. The existing Phase 4 verification report records 196 automated tests, 14 Chrome browser cases, lint and build passing; those are historical results. Fresh documentation-task checks and any skips are recorded separately in the verification history. Phase 5 Race Mode remains planned; its navigation page is not a working comparison mode.
+The documentation reconciliation on 2026-11-08 recorded the Phase 4 scope. The existing Phase 4 verification report records 196 automated tests, 14 Chrome browser cases, lint and build passing; those are historical results. Fresh documentation-task checks and any skips are recorded separately in the verification history. Phase 5 is now implemented; the dated Phase 5 verification entry records its new checks separately from those historical results.
 
 ## Local development and verification
 
@@ -74,6 +74,9 @@ Generators copy input at first advancement and never mutate the caller's array. 
 - `src/components/playground/`: registry selection, input studio, playback toolbar, live panels, and workspace integration.
 - `src/components/visualization/`: reusable sorting renderer, binary cells, Kadane cells/chart, shared state mapping and accessible table.
 - `e2e/playground.spec.js`: actual Chrome desktop/mobile controls, six algorithm flows, validation, themes, console errors, density, and cached replay.
+- `src/race/raceController.js`: a coordinator around two existing playback controllers, one scheduler and bounded index-pair history.
+- `src/race/raceComparison.js`: supported current counters and deterministic educational observations, with no aggregate cost model.
+- `src/components/race/` and `src/hooks/useRace.js`: shared configuration/transport, reusable lanes, live summary and React lifecycle.
 - `src/utils/input.js`: existing strict parsing and presets.
 - `tests/`: engine tests, known algorithm fixtures, deterministic property tests, trace invariants, exact metrics, and real-generator playback integration.
 
@@ -154,7 +157,7 @@ Forward seeking generates only requested frames. The UI scrubber seeks only with
 ## Next phases
 
 - **Phase 4 complete:** interactive rendering and playback integration, chunked end-generation, synchronized panels, supported metrics, keyboard controls, responsive layout, and browser verification.
-- **Phase 5:** race mode with identical starting inputs, independent timelines, documented synchronization, and a fair comparison summary.
+- **Phase 5 complete:** isolated sorting lanes, a single coordinated clock, exact paired history, two comparison modes, shared-scale SVGs, and supported-metric summaries.
 - **Phase 6:** educational algorithm library, accessibility and animation polish, browser-level interaction verification.
 
 ## Screenshots and demo
@@ -182,3 +185,17 @@ The canvas measures available width. Small arrays fit; dense arrays use containe
 ### Browser verification
 
 `npm run test:browser` launches the installed Chrome browser headlessly at 1440×1000 and 390×844, with reduced motion. The suite starts/reuses the local Vite server and asserts zero page/console errors. Chrome must be installed; use Playwright's supported browser installation/channel configuration for other machines. Browser tests require permission to launch Chrome in restricted environments. Failed-test traces are saved under ignored `test-results/`; `playwright-report/` is reserved for optional HTML reporting. Runtime dependencies were unchanged; React Testing Library, jsdom, and Playwright were added only as development dependencies.
+
+## Using Race Mode (Phase 5)
+
+Open **Race Mode** in the existing navigation. Select Algorithm A/B from Bubble, Insertion, Merge and Quick; the same algorithm is allowed in both lanes. The shared input studio uses the same 0–48 integer domain, presets and validation as Playground. Each lane receives an independent clone. Draft edits pause both lanes and are explicitly unapplied until Apply; committing input or changing a selection replaces both old executions and resets the coordinated timeline.
+
+**Synchronized Steps** advances each unfinished lane once per shared tick. Tick 0 is the initial pair. A completed lane remains at its final frame while the other continues. **Operation Comparison** uses exactly the same clock/history and emphasizes separate counters, not a benchmark or different algorithm. Comparisons, swaps and main-array writes are separate; a swap already contributes two writes. Merge buffer writes remain separate too. No aggregate total, CPU runtime, universal winner or algorithm-performance claim is invented.
+
+The shared transport supports Start/Pause/Resume, previous/next paired tick, restart/beginning, 0.25×–4× speed, retained timeline seeking and cancellable Finish. Healthy restart restores the initial retained pair; after an error it reloads the selected configuration. Rewind restores exact lane positions and metrics, including ticks where one lane was already complete. The summary is partial until both currently displayed terminal states have verified sorted output matching the original input. Rewinding returns it to partial status.
+
+The coordinator owns one scheduler and never starts two lane timers. It stores only frozen `{left,right}` snapshot indices per tick, capped at 20,000 paired entries; each lane retains the existing 20,000-snapshot cap without eviction. Finish walks paired ticks in chunks of at most 64 with an approximately 8 ms work budget. It yields between chunks and is cancelled by pause, navigation, input/algorithm changes, restart, seek or unmount. It does not call two independent lane end generators. Errors stop scheduling, retain diagnostic/cached navigation, and require restart or reconfiguration for a fresh execution.
+
+Both SVGs reuse the Phase 4 renderer with a shared scale derived from the initial input, including held insertion keys. Desktop lanes are side by side, stacking at 1100 px and below. Dense arrays scroll locally; names/status and compact expandable pseudocode/explanations remain available. Reduced motion and focused native scroll keys are preserved. Live announcements cover shared status transitions, not every rapidly changing metric.
+
+Phase 5 screenshots: [desktop, light theme](docs/media/phase5-desktop.png) and [mobile, dark theme](docs/media/phase5-mobile.png). Current checks and limitations are in [verification history](docs/verification.md). Phase 6, physical-device, screen-reader and Safari/Firefox work remain outside this phase. No commit, push or deployment is part of Phase 5.

@@ -6,7 +6,7 @@
 
 ## No HTTP API
 
-Phases 1–4 execute locally in the browser. There are no REST endpoints, backend services, authentication, external AI APIs, or database APIs. Vite's development server and test automation are tooling, not application HTTP contracts. No network API is proposed for Phase 5.
+Phases 1–5 execute locally in the browser. There are no REST endpoints, backend services, authentication, external AI APIs, or database APIs. Vite's development server and test automation are tooling, not application HTTP contracts. No network API is proposed for Phase 5.
 
 The contracts below were checked against source on 2026-11-08. They are internal JavaScript interfaces, not versioned network services.
 
@@ -91,4 +91,28 @@ controller.previous();
 controller.dispose();
 ```
 
-Import paths above are relative to a hypothetical module in `docs/`; use the appropriate relative paths in real source. Race-specific APIs do not exist; any future contract must be explicitly designed before Phase 5 coding.
+Import paths above are relative to a hypothetical module in `docs/`; use the appropriate relative paths in real source. Race-specific APIs are documented below. Phase 6 is not included.
+
+## Race coordinator (Phase 5)
+
+Module: [raceController.js](../src/race/raceController.js). `RACE_ALGORITHM_IDS` lists the four sorting IDs; `RACE_MODES` is `["steps","operations"]`.
+
+`createRaceController({interval=600,maxSnapshots=20000,maxTicks=20000,registry=algorithmRegistry}={})` validates a positive finite interval and integer limits from 1–20,000. The optional registry defaults to the existing singleton. Each lane is an existing playback controller; only the coordinator schedules.
+
+| Method                                                          | Behavior                                                                                                                                                                                                    |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getState()`                                                    | Frozen coherent race view; see [race model](DATA_MODEL.md#race-session-state--implemented-phase-5)                                                                                                          |
+| `subscribe(listener)`                                           | Zero-argument subscriber; returns unsubscribe                                                                                                                                                               |
+| `load({input=[],leftId="bubble-sort",rightId="quick-sort"}={})` | Cancels/disposes old lanes, validates sorting eligibility/input, clones input independently, loads initial pair and resets history. Errors become race state, not a successful result. Same IDs are allowed |
+| `play()` / `pause()`                                            | Shared start/resume or cancellation of timer/chunk work while retaining history                                                                                                                             |
+| `next()` / `previous()`                                         | Advance unfinished lanes once or restore the exact previous retained pair; manual actions pause                                                                                                             |
+| `seek(tick)`                                                    | Pause and select an integer within retained pair history; outside-history/invalid requests leave the pair unchanged                                                                                         |
+| `restart()`                                                     | Restore initial pair; after an error, reload selected configuration to allow recovery                                                                                                                       |
+| `setSpeed(value)`                                               | Finite 0.25–4; invalid values throw; reschedules subsequent timed ticks without reset                                                                                                                       |
+| `setMode(value)`                                                | `steps` or `operations`; invalid mode throws; changes emphasis without resetting history or clock                                                                                                           |
+| `endAsync()`                                                    | Promise resolving true when both valid outputs complete, false on error/cancellation/unavailable execution. Walks paired ticks in cancellable chunks, not independent lane end jobs                         |
+| `clear()` / `dispose()`                                         | Cancel work and release lane/history resources; clear permits reuse, disposal does not                                                                                                                      |
+
+Other than getState, subscribe and endAsync, these methods return undefined. A cancellation epoch rejects stale callbacks; load increments sessionId. Paused/errored cached previous/next/seek remain exact; new generation and timed playback stay blocked on error until reload. Finish is bounded to 64 paired advances or approximately 8 ms per chunk and yields between chunks. Existing snapshot caps apply, plus the race-pair cap; no eviction or unbounded timeline duplication is introduced.
+
+[useRace](../src/hooks/useRace.js) returns `{state,controller}` with an external-store subscription and clear-on-unmount. [buildRaceComparison](../src/race/raceComparison.js) returns `{partial,rows,observations}` from a current race view; unsupported categories are null/omitted rather than zero. It does not aggregate swaps/writes or benchmark runtime.

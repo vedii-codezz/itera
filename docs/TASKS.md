@@ -4,7 +4,7 @@
 
 [Documentation index](../README.md#documentation) · [Specification](SPEC.md) · [Verification history](verification.md)
 
-Checked implementation items below were reconciled with source on 2026-11-08. Check results are separately dated in verification history; the historical 196 automated / 14 Chrome results are not relabeled as a fresh browser run. Planned and proposed work is not authorized by this checklist.
+Checked implementation items below were reconciled with source through Phase 5 on 2026-11-08. Check results are separately dated in verification history; the historical 196 automated / 14 Chrome results are not relabeled as a fresh browser run. Phase 5 implementation was explicitly approved by its brief; this checklist does not authorize Phase 6.
 
 ## Milestone 1: Foundation — implemented
 
@@ -35,30 +35,30 @@ Checked implementation items below were reconciled with source on 2026-11-08. Ch
 - [x] Responsive panels, accessible state table, keyboard shortcuts/reference and live reduced motion.
 - [x] Existing automated and Chrome viewport regression suites; historical execution reported 196 + 14 passing. Consult the dated verification record for fresh runs or skips.
 
-## Milestone 5: Race Mode — planned; all tasks pending
+## Milestone 5: Race Mode — implemented
 
-Implementation must follow explicit approval. Tasks are dependency ordered and intended to be small reviewable increments.
+The approved Phase 5 brief resolved same-algorithm selection and comparison-mode semantics. The following work is implemented; current verification is appended to the history.
 
-- [ ] Inspect current [API](API.md) contracts and document race integration points.
-- [ ] Resolve comparison units, same-algorithm selection and independent completion semantics.
-- [ ] Define the proposed RaceSession shape and transitions; document synchronized-step semantics and whether operation comparison is included.
-- [ ] Implement isolated execution sessions sharing identical cloned starting values.
-- [ ] Add A/B selectors restricted to the four sorting algorithms.
-- [ ] Compose dual SVG lanes using existing renderers.
-- [ ] Wire shared start/pause/resume/restart controls and cancellation.
-- [ ] Wire shared speed without overlapping or leaked timers.
-- [ ] Add synchronized-step progression with documented tick behavior.
-- [ ] Add operation-count comparison if approved, without presenting animation time as benchmark runtime.
-- [ ] Render each lane's supported counters, operation, complexity and progress accurately.
-- [ ] Handle unequal trace lengths and one lane finishing first.
-- [ ] Add final side-by-side results and comparison summary; avoid universal-winner claims.
-- [ ] Stack lanes on mobile and preserve dense-array readability.
-- [ ] Test algorithm/input switching during a running race.
-- [ ] Test pause/resume, cancellation, restart, completion and unmount cleanup.
-- [ ] Test unequal trace lengths, supported-metric differences and deterministic replay.
-- [ ] Run all existing/new automated tests, lint and production build.
-- [ ] Verify Chrome desktop/mobile interaction and console errors; record exactly what ran.
-- [ ] Update current docs and append verification evidence; stop at the approved boundary.
+- [x] Inspect current [API](API.md) contracts and document race integration points.
+- [x] Resolve comparison units, same-algorithm selection and independent completion semantics.
+- [x] Define the proposed RaceSession shape and transitions; document synchronized-step semantics and whether operation comparison is included.
+- [x] Implement isolated execution sessions sharing identical cloned starting values.
+- [x] Add A/B selectors restricted to the four sorting algorithms.
+- [x] Compose dual SVG lanes using existing renderers.
+- [x] Wire shared start/pause/resume/restart controls and cancellation.
+- [x] Wire shared speed without overlapping or leaked timers.
+- [x] Add synchronized-step progression with documented tick behavior.
+- [x] Add operation-count comparison if approved, without presenting animation time as benchmark runtime.
+- [x] Render each lane's supported counters, operation, complexity and progress accurately.
+- [x] Handle unequal trace lengths and one lane finishing first.
+- [x] Add final side-by-side results and comparison summary; avoid universal-winner claims.
+- [x] Stack lanes on mobile and preserve dense-array readability.
+- [x] Test algorithm/input switching during a running race.
+- [x] Test pause/resume, cancellation, restart, completion and unmount cleanup.
+- [x] Test unequal trace lengths, supported-metric differences and deterministic replay.
+- [x] Run all existing/new automated tests, lint and production build.
+- [x] Verify Chrome desktop/mobile interaction and console errors; record exactly what ran.
+- [x] Update current docs and append verification evidence; stop at the approved boundary.
 
 ## Later work — not Phase 5
 
@@ -72,7 +72,7 @@ Implementation must follow explicit approval. Tasks are dependency ordered and i
 
 ## Open decisions / TODOs
 
-- [ ] Confirm race operation-count definitions/normalization for algorithms with different supported counters.
-- [ ] Decide whether both lanes can select the same algorithm.
-- [ ] Confirm if operation comparison is a separate mode or summary of synchronized-step runs.
+- [x] Keep operation categories separate; no aggregate/normalization model is invented. Unsupported categories are N/A or omitted.
+- [x] Allow the same sorting algorithm in both lanes with deterministic independent state.
+- [x] Provide Operation Comparison as a separate emphasis mode sharing synchronized playback/history.
 - [ ] Confirm a deployment provider, budget/free-tier constraint, or deadline only if the user requires one; none is assumed.

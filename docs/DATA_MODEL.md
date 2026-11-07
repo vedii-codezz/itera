@@ -6,7 +6,7 @@
 
 ## In-memory state only
 
-These are actual JavaScript objects, arrays, closures and React state, audited on 2026-11-08. There is no database schema, SQL table, cloud account, or stored execution history. Phases 1–4 are implemented; Race Mode remains planned.
+These are actual JavaScript objects, arrays, closures and React state, audited on 2026-11-08. There is no database schema, SQL table, cloud account, or stored execution history. Phases 1–5 are implemented; Race Mode is an in-memory coordinated session.
 
 ```text
 algorithmRegistry -> AlgorithmDefinition.generate -> generator iterator
@@ -115,6 +115,36 @@ Unsupported legacy base counters may exist as zeros but must not be displayed as
 - Kadane result: `{sum,start,end,subarray}`; nonempty input yields a nonempty best subarray. Ties prefer earliest start then earliest end. Empty input returns `{sum:0,start:null,end:null,subarray:[]}`.
 - Quick policy: last-element Lomuto partition, `<=` lower side, no self-swaps.
 
-## Proposed RaceSession — not implemented
+## Race session state — implemented Phase 5
 
-A future model may relate one shared input to two isolated playback controllers and comparison-mode/status fields. The supplied `RaceSession` relationship diagram is a planning concept, not an existing class, exported type, persistence model, or settled API. Define it before implementing Phase 5; see [Tasks](TASKS.md).
+This is state returned by `createRaceController().getState()`, not a persisted class or database entity:
+
+```js
+{
+  (sessionId,
+    input,
+    left,
+    right,
+    tick,
+    generatedTicks,
+    pair,
+    playing,
+    generating,
+    speed,
+    mode,
+    complete,
+    knownComplete,
+    error,
+    status);
+}
+```
+
+The outer view, shared input, lane views and pairs are frozen; snapshots remain deep-frozen by the existing engine. `mode` is `steps` or `operations`. `status` is idle, Ready, Running, Paused, Generating, Completed or Error. `tick` is a zero-based index into retained coordinated history (−1 when empty). `generatedTicks` counts pairs including initial tick 0. `pair` is null or `{left:index,right:index}`; no full snapshot arrays are duplicated in this history.
+
+Each lane view contains `algorithm` (registry definition), `snapshot`, `index`, `generated`, `knownComplete`, `complete`, `error`, and `status`. Lane completion refers to the displayed terminal position, not just its controller's globally exhausted iterator. A finished lane's index remains fixed during later ticks. Lane statuses are Ready, Running, Paused, Generating, Completed or Error.
+
+Race `complete` is true only when the current pair has both terminal lanes, no race error and verified final arrays/results matching the sorted original input. Rewind makes it false; `knownComplete` retains the knowledge that the full timeline has already been generated. A race-level error is null or diagnostic text; it persists through cached navigation and is cleared by loading/restarting the failed configuration. Lane errors remain isolated. Final success cannot be inferred merely because both current arrays happen to match.
+
+The coordinator privately owns two controllers, selected configuration, expected output, ordered frozen index pairs, cursor, cancellation epoch, one timer and pending finish resolver. Input/algorithm replacement disposes old lanes, increments sessionId and resets paired history/metrics. Healthy restart seeks tick 0 without discarding caches; speed/mode changes do not reset snapshots. Defaults cap both lane frames and paired entries at 20,000 with no eviction.
+
+Comparison models contain `partial`, metric `rows` and deterministic `observations`. Row entries have `id`, `label`, `left`, `right`; unsupported/unavailable values are null, never misleading zeroes. Categories unsupported by both lanes are omitted. Partial/final labels depend on current race completion. No total recorded-operation aggregate or runtime field is invented.

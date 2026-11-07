@@ -10,6 +10,7 @@ export const SnapshotVisualization = memo(function SnapshotVisualization({
   snapshot,
   playing = false,
   speed = 1,
+  scaleValues,
 }) {
   const reduced = useMotionPreference();
   const container = useRef(null);
@@ -45,6 +46,7 @@ export const SnapshotVisualization = memo(function SnapshotVisualization({
           algorithm={algorithm}
           snapshot={snapshot}
           availableWidth={availableWidth}
+          scaleValues={scaleValues}
         />
       ) : kind === "search" ? (
         <BinarySearchVisualization

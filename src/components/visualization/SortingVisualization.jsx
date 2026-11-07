@@ -10,6 +10,7 @@ export function SortingVisualization({
   algorithm,
   snapshot,
   availableWidth = 520,
+  scaleValues,
 }) {
   const {
     array,
@@ -21,7 +22,7 @@ export function SortingVisualization({
   const width = Math.max(320, availableWidth, array.length * 44 + 48),
     step = (width - 48) / Math.max(1, array.length),
     x = (i) => 24 + i * step + step / 2;
-  const { y, zero } = plotScale(array, 55, 235);
+  const { y, zero } = plotScale(scaleValues ?? array, 55, 235);
   const swap = h.swapping?.length === 2 ? h.swapping : null;
   return (
     <>

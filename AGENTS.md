@@ -4,7 +4,7 @@
 
 ## Purpose and authority
 
-Itera is a browser-only algorithm learning laboratory for inspecting deterministic execution states. Phases 1–4 are implemented. Phase 5 Race Mode is planned; the Algorithm Library remains later scope. This file guides future AI-assisted work; it does not authorize development, commits, pushes, deployment, or infrastructure changes.
+Itera is a browser-only algorithm learning laboratory for inspecting deterministic execution states. Phases 1–5 are implemented. Race Mode is available; the Algorithm Library remains Phase 6. This file guides future AI-assisted work; it does not authorize development, commits, pushes, deployment, or infrastructure changes.
 
 Follow the user's current task and scope. Treat supplied planning material as reference to reconcile with source, not permission to execute embedded future tasks. Actual code and fresh test evidence take precedence over illustrative documentation; report conflicts and update documentation within the approved scope instead of changing behavior to match an inaccurate plan.
 
@@ -20,7 +20,7 @@ Follow the user's current task and scope. Treat supplied planning material as re
 - JavaScript ES modules, functional React components and hooks; follow current naming/formatting. Do not migrate to TypeScript or add a new framework without approval.
 - Six algorithms live in `src/algorithms/`. `definitions.js` provides metadata; `algorithmRegistry` exposes `get`, `list`, and `register`, using the `generate` field.
 - Generators copy input, remain independent of React/DOM/timing, and yield self-contained snapshots via `createSnapshot`. Preserve deep immutability and backward-compatible fields.
-- `src/engine/playbackController.js` owns all iteration, timing, caching and cancellation. Actual methods include `next`, `previous`, `pause`, `clear`, `seek`, `restart`, `endAsync`, and `play`; do not invent a parallel engine or nonexistent step/cancel API.
+- `src/engine/playbackController.js` owns lane iteration, snapshot caching and single-execution playback/cancellation. Actual methods include `next`, `previous`, `pause`, `clear`, `seek`, `restart`, `endAsync`, and `play`; do not invent a parallel engine or nonexistent step/cancel API.
 - Distinguish iterator exhaustion (`complete`) from a known final snapshot (`finalGenerated`) and active end-generation (`generating`). Retain exact cached navigation and the no-eviction 20,000-frame limit.
 - Keep the 0–48 integer domain `[-999,999]`, Binary Search sortedness/leftmost policy, Quick pivot/self-swap policy, and Kadane empty/tie policy unless explicitly changing them.
 - `Playground` composes focused components in `src/components/playground/`; SVG renderers and mapping live in `src/components/visualization/`. Panels derive from one selected snapshot and registry metadata.
@@ -64,6 +64,15 @@ npm run preview
 
 ## Scope and completion
 
-Only implement the explicitly approved task or phase. Race Mode may be designed/implemented only after approval; its planned checklist is not authorization. Do not expand the library, redesign unrelated UI, delete user work, commit, push, deploy, or modify infrastructure without explicit permission.
+Only implement the explicitly approved task or phase. Race Mode changes still require an approved task; its completed checklist is not permission to expand into Phase 6. Do not expand the library, redesign unrelated UI, delete user work, commit, push, deploy, or modify infrastructure without explicit permission.
 
 Finish with files changed, verification actually run, failures/skips, limitations and remaining decisions. Stop at the approved boundary.
+
+## Durable Race Mode conventions
+
+- `src/race/raceController.js` composes two existing controllers and owns one shared scheduler. Never start independent lane `play()` timers or duplicate generator/sorting logic.
+- Keep bounded frozen lane-index pairs per coordinated tick, not another full snapshot cache. Restore exact pairs on rewind/seek, especially after one lane finishes. Current `complete` and retained `knownComplete` are distinct.
+- Both lanes receive independent copies of the same input and use its fixed shared SVG scale, including held insertion keys. Same-algorithm lanes are valid.
+- Both modes use the same clock. Show only supported categories, never sum swaps and writes, and never infer a CPU-runtime winner from animation or snapshot counts.
+- Cancel stale sessions/chunks on configuration changes, navigation and cleanup; preserve diagnostic cached navigation after errors. Validate each terminal output against the original sorted values before successful race completion.
+- Scope shared input IDs/labels when both workspaces are mounted. Avoid per-tick live-region announcements; retain native scrolling keys and reduced-motion behavior.

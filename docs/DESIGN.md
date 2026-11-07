@@ -6,7 +6,7 @@
 
 ## Direction and status
 
-A calm creative-coding laboratory with editorial typography, legible data, restrained borders and meaningful state indicators. This records the implemented Phase 4 interface as inspected on 2026-11-08; it does not request a redesign. The supplied wireframes below remain design references. Race Mode is planned Phase 5.
+A calm creative-coding laboratory with editorial typography, legible data, restrained borders and meaningful state indicators. This records the implemented Phases 4–5 interface as inspected on 2026-11-08; it does not request a redesign. The supplied wireframes below remain design references. Race Mode is implemented in Phase 5, reusing this identity.
 
 ## Actual theme tokens
 
@@ -61,7 +61,7 @@ Geometry and values snap to actual snapshots. Short color transitions run only d
 
 ## Supplied ASCII wireframes — preserved reference
 
-These conceptual wireframes are not exact current screenshots. In particular, the real input studio is above the canvas, mobile uses four navigation buttons rather than a menu drawer, and the explanation panel is not collapsible. Actual images are linked below. The Race Mode wireframe is proposed only.
+These conceptual wireframes are not exact current screenshots. In particular, the real input studio is above the canvas, mobile uses four navigation buttons rather than a menu drawer, and the explanation panel is not collapsible. Actual images are linked below. The Race Mode wireframe is a structural reference for the implemented screen, not an exact layout.
 
 ### Playground desktop reference
 
@@ -94,7 +94,7 @@ These conceptual wireframes are not exact current screenshots. In particular, th
 +--------------------------+
 ```
 
-### Race Mode reference — planned
+### Race Mode reference — implemented structural reference
 
 ```text
 +---------------------------------------------------------------+
@@ -108,10 +108,18 @@ These conceptual wireframes are not exact current screenshots. In particular, th
 +---------------------------------------------------------------+
 ```
 
-On mobile, the proposed Race Mode lanes would stack vertically. This is not an implemented screen.
+The implemented Race Mode stacks lanes at 1100 px and below. The wireframe remains an approximate structural reference, not an exact screenshot.
 
 ## Evidence and remaining design work
 
 Actual Phase 4 screenshots: [desktop](media/phase4-desktop.png) and [mobile](media/phase4-mobile.png). Their existence is verified; the current documentation task does not claim a new browser/visual session. Historical Chrome desktop/mobile and live preference checks are in [verification.md](verification.md).
 
-TODO: perform a screen-reader session, broader contrast/accessibility audit, Safari/Firefox checks, and physical-device testing. Keyboard shortcuts and their reference already exist. No WCAG conformance level or cross-browser certification is claimed. Any Race Mode layout refinement requires a separately approved Phase 5 task.
+TODO: perform a screen-reader session, broader contrast/accessibility audit, Safari/Firefox checks, and physical-device testing. Keyboard shortcuts and their reference already exist. No WCAG conformance level or cross-browser certification is claimed. Further layout refinements or Phase 6 changes require a separately approved task.
+
+## Race Mode (Phase 5)
+
+Algorithm A/B selectors lead, followed by the shared InputStudio, mode buttons, transport/timeline, dual lanes and a partial/final comparison summary. A small typographic `vs.` uses the existing Georgia/accent treatment. The desktop pair stacks at 1100 px, leaving visualization-local scrolling for dense arrays. No new palette, webfont, leaderboard, confetti or decorative timing rank was introduced.
+
+Each lane reuses SnapshotVisualization, Statistics and registry PseudocodePanel. Compact details are collapsed by default; operation/status and counters remain visible. `scaleValues` fixes both sorting renderers to the same initial input domain, including insertion keys held outside the array. Light and dark styles use the existing tokens. Only shared status transitions are live announcements, not every tick/counter. Mode buttons expose pressed state; native scroll keys, visible focus and reduced motion remain intact.
+
+Actual Race Mode screenshots: [desktop/light](media/phase5-desktop.png), [mobile/dark](media/phase5-mobile.png). Browser viewport checks and source-level accessibility support do not constitute physical-device, screen-reader or WCAG certification; broader audits remain future work.

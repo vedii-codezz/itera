@@ -116,3 +116,58 @@ The 14 Chrome browser cases described earlier remain historical reported results
 ### Remaining planning TODOs
 
 Race Mode still needs an approved comparison/counting policy, same-algorithm selection decision, and confirmation of whether operation comparison is a separate mode. Hosting target, budget/free-tier constraints and deadline are unspecified rather than assumed. Broader accessibility, screen-reader, physical-device and Safari/Firefox checks remain future work. These TODOs do not imply missing Phase 4 implementation or permission to start further development.
+
+## Phase 5 Race Mode verification — 2026-11-08
+
+### Scope and completed behavior
+
+Phase 5 is complete. Race Mode now opens from the existing navigation and compares any two of Bubble, Insertion, Merge and Quick, including identical selections. Both lanes receive independent copies of the same validated input. The Playground, six generators and original playback controller are preserved; no Phase 6, backend, authentication, AI service or dependency was added.
+
+`src/race/raceController.js` composes two existing controllers. It owns one scheduler and never starts lane play timers. Each unfinished lane advances one snapshot per shared tick; a finished lane freezes. Retained history stores only frozen `{left,right}` indices, including initial tick 0, so rewind/seek restores exact paired states. It is bounded at 20,000 pairs with no eviction; the existing per-lane 20,000-frame limits remain. Current completion is distinct from globally known retained completion.
+
+Start/pause/resume, restart/beginning, previous/next, shared speed, cached timeline seeking and cancellable Finish are functional. Finish advances paired ticks in chunks of up to 64 with an approximately 8 ms work budget and a timeout yield. Timed playback and chunk generation share the scheduler exclusively. Cancellation epochs/session IDs prevent old work from mutating replacement sessions. Load disposes obsolete lanes; clear/dispose release resources; navigation away pauses the retained workspace. A healthy restart returns to retained tick 0; error restart reloads configuration.
+
+Synchronized Steps and Operation Comparison share the same clock/history. The latter emphasizes separate recorded categories. Unsupported categories are omitted if neither lane supports them, or N/A on the unsupported side. Swaps already contribute two writes and are never added to writes into an invented total. Observations use only current counters, label partial states, recognize ties/trade-offs, and never present a universal winner or CPU benchmark. A final successful summary requires both lane arrays/results to match a sorted copy of the original input, including duplicates. Rewinding returns the summary to partial status; errors stop scheduling and preserve diagnostic cached navigation.
+
+### UI, visualization and architecture
+
+Created `src/components/race/RaceMode.jsx`, `RacePlaybackControls.jsx`, `RaceLane.jsx`, `RaceSummary.jsx`, `src/race/raceController.js`, `raceComparison.js`, and `src/hooks/useRace.js`. Reused InputStudio, SnapshotVisualization, Statistics and registry PseudocodePanel rather than duplicating sorting logic or definitions.
+
+Necessary shared extensions are optional scoped input IDs/labels, and an optional `scaleValues` renderer prop. Both race lanes use the same original-input value scale even when an insertion key is temporarily held outside its working array. Defaults in Playground are unchanged. App lazily mounts/retains Race Mode and pauses it on navigation. Existing theme tokens, fonts, reduced-motion subscription, geometry snapping and color-only transitions remain in use.
+
+Desktop lanes are side by side and stack at 1100 px or below. Dense arrays and the summary table scroll locally without page overflow. Lane names/status/metrics remain visible, with compact expandable explanations/pseudocode. Only shared status transitions use a live announcement; fast metrics are not individually announced. Native scroll keys, focus indicators, semantic controls and text/state alternatives are preserved.
+
+### Checks executed
+
+| Check | Result |
+| --- | --- |
+| Baseline automated suite | 196/196 passed with `npm test -- --run --no-file-parallelism` before implementation |
+| Baseline lint / production build | Passed |
+| Baseline Chrome suite | Original 14/14 desktop/mobile cases passed |
+| Final automated suite | 240/240 passed across 9 files using the same full-suite sequential command; all original 196 preserved, 44 new Race Mode tests |
+| New controller coverage | 34 tests: clones/immutability, all sorting combinations and identical selections, edge cases, maximum input, exact pairs, early completion freeze, one timer, live speed, replay, errors, output verification, bounds, cancellation, session replacement and disposal |
+| Comparison coverage | 3 tests: applicable counters, partial/final values, rewind and unsupported category omission |
+| React integration coverage | 7 tests: selectors/input, paired controls, synchronized panels/metrics, modes, completion/errors, cleanup and held-key shared scale |
+| Final Chrome suite | 24/24 passed: all original 14 plus 10 Race Mode viewport cases (5 desktop + 5 mobile) |
+| Browser environments | Installed headless Chrome, 1440×1000 desktop and 390×844 mobile viewport; normal/reduced motion, light/dark themes |
+| Browser errors | Every browser case asserted zero page errors and zero console errors |
+| Final ESLint | Passed, no errors or warnings |
+| Final production build | Passed; Vite transformed 2,015 modules; JS 427.94 kB / 136.79 kB gzip, CSS 35.36 kB / 8.03 kB gzip |
+| Documentation links | 104 local links/anchors checked across 13 Markdown documents; none broken |
+| Source/scope check | Algorithms, original playback controller, original test files, package/lockfiles unchanged; no commit, push or deployment |
+
+Fresh screenshots were captured and visually inspected: `docs/media/phase5-desktop.png` (light) and `phase5-mobile.png` (dark). Browser runs regenerate Phase 4 images; those two historical assets were restored byte-for-byte from HEAD after verification to keep their history intact.
+
+### Review and resolved findings
+
+An independent read-only review inspected coordination, cache/error semantics, output validation, state isolation, React cleanup, shared-scale rendering, scoped input IDs and comparisons; it found no actionable defects. The reviewer did not independently execute browser/contrast/assistive-technology checks or certify the still-in-progress documentation. The implementation task performed the browser and visual checks described above and reconciled the final documents with source.
+
+Test-first implementation included failing interfaces and regressions. Added regressions exposed retained forward navigation being blocked after an error, disposed paired history not being released, and irrelevant summary rows. Filtering unsupported rows then exposed an empty-initial-state summary access; all were corrected and verified by the green final suite. No existing assertions were removed or weakened, no unrelated failures were suppressed, and no check remains failing.
+
+### Documentation and remaining limits
+
+README, SPEC, DESIGN, ARCHITECTURE, DATA_MODEL, API and TASKS now describe implemented Phase 5 behavior. AGENTS records durable race coordination, scaling, metrics and cancellation conventions. Historical verification content and earlier phase plans are preserved. Same-algorithm selection is allowed; Operation Comparison is an emphasis mode, not a new clock or aggregate cost model. Hosting/budget/deadline remain unspecified future decisions.
+
+Limits remain 48 integers in `[-999,999]`, 20,000 snapshots per lane and 20,000 paired entries, without eviction. A chunk budget cannot preempt a generator call; the six existing bounded-input generators yield frequently. Input drafts pause immediately but replace both committed executions only on Apply; invalid drafts retain the previous valid pair with an explicit notice. Race data is memory-only, and retained workspaces reset on browser reload.
+
+Chrome mobile viewport testing is not a physical-device test. Safari/Firefox, actual screen-reader sessions, physical devices and broader contrast/WCAG certification remain unverified. No known Phase 5 acceptance requirement is incomplete. The Algorithm Library and Phase 6 remain deferred until explicit approval. No commit, push or deployment was performed for Phase 5.

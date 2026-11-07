@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button, Panel } from "./components/UI.jsx";
 import { Playground } from "./components/playground/Playground.jsx";
+import { RaceMode } from "./components/race/RaceMode.jsx";
 import { useTheme } from "./hooks/useTheme.js";
 const navigation = [
   ["Playground", FlaskConical],
@@ -22,7 +23,8 @@ const navigation = [
 ];
 export default function App() {
   const [theme, toggleTheme] = useTheme(),
-    [page, setPage] = useState("Playground");
+    [page, setPage] = useState("Playground"),
+    [raceVisited, setRaceVisited] = useState(false);
   return (
     <MotionConfig reducedMotion="user">
       <div className="app-shell">
@@ -50,7 +52,10 @@ export default function App() {
                 key={name}
                 className={`nav-item ${page === name ? "selected" : ""}`}
                 aria-current={page === name ? "page" : undefined}
-                onClick={() => setPage(name)}
+                onClick={() => {
+                  if (name === "Race Mode") setRaceVisited(true);
+                  setPage(name);
+                }}
               >
                 <Icon size={18} aria-hidden="true" />
                 <span>{name}</span>
@@ -86,14 +91,19 @@ export default function App() {
               <strong>{page}</strong>
             </span>
             <span className="development">
-              <i /> Phases 01–04
+              <i /> Phases 01–05
             </span>
           </header>
           <div className="page-content" hidden={page !== "Playground"}>
             <Playground active={page === "Playground"} />
           </div>
+          {raceVisited && (
+            <div className="page-content" hidden={page !== "Race Mode"}>
+              <RaceMode active={page === "Race Mode"} />
+            </div>
+          )}
           <AnimatePresence mode="wait">
-            {page !== "Playground" && (
+            {page !== "Playground" && page !== "Race Mode" && (
               <motion.div
                 key={page}
                 initial={{ opacity: 0, y: 7 }}
@@ -117,14 +127,16 @@ export default function App() {
                       students, developers, and curious minds. Inspect input,
                       follow execution, and see why each operation matters.
                     </p>
-                    <Panel title="Current build" eyebrow="PHASES 01–04">
+                    <Panel title="Current build" eyebrow="PHASES 01–05">
                       <div className="information-body">
                         <h3>A deliberate foundation.</h3>
                         <p>
                           Six algorithm generators now power the interactive
                           playground. Explore real snapshots with playback,
                           synchronized pseudocode, explanations, and
-                          algorithm-specific visualizations.
+                          algorithm-specific visualizations. Race Mode compares
+                          two sorting strategies with one shared input and
+                          clock.
                         </p>
                         <p>
                           No accounts, servers, or API keys. Theme preference is
@@ -137,27 +149,18 @@ export default function App() {
                   <div className="information-page">
                     <span className="eyebrow">THE NEXT CHAPTER</span>
                     <h1>
-                      {page === "Race Mode" ? "Same input." : "Six algorithms."}
+                      Six algorithms.
                       <br />
-                      <em>
-                        {page === "Race Mode"
-                          ? "Different paths."
-                          : "A clearer perspective."}
-                      </em>
+                      <em>A clearer perspective.</em>
                     </h1>
                     <p>
-                      {page === "Race Mode"
-                        ? "Side-by-side sorting comparisons arrive in Phase 5. Each algorithm will receive identical values and advance on its own execution timeline."
-                        : "Bubble Sort, Insertion Sort, Merge Sort, Quick Sort, Binary Search, and Kadane’s Algorithm are available in the playground. Educational detail views follow in Phase 6."}
+                      Bubble Sort, Insertion Sort, Merge Sort, Quick Sort,
+                      Binary Search, and Kadane’s Algorithm are available in the
+                      playground. Educational detail views follow in Phase 6.
                     </p>
                     <div className="coming-panel">
                       <SlidersHorizontal size={28} />
-                      <h3>
-                        {page === "Race Mode"
-                          ? "Comparison workspace"
-                          : "Algorithm library"}{" "}
-                        is not available yet.
-                      </h3>
+                      <h3>Algorithm library is not available yet.</h3>
                       <p>
                         Explore the interactive playground while these later
                         phases remain deferred.

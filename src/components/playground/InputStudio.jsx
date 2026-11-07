@@ -10,7 +10,11 @@ export function InputStudio({
   onReset,
   error,
   onError,
+  idPrefix = "",
 }) {
+  const arrayId = idPrefix ? `${idPrefix}-array` : "array";
+  const helpId = idPrefix ? `${idPrefix}-input-help` : "input-help";
+  const errorId = idPrefix ? `${idPrefix}-input-error` : "input-error";
   const [length, setLength] = useState("12"),
     [min, setMin] = useState("5"),
     [max, setMax] = useState("95"),
@@ -39,17 +43,17 @@ export function InputStudio({
           onApply();
         }}
       >
-        <label htmlFor="array">
+        <label htmlFor={arrayId}>
           Your array <span className="muted">Comma-separated integers</span>
         </label>
         <div className="array-row">
           <input
-            id="array"
-            aria-label="Array values"
+            id={arrayId}
+            aria-label={idPrefix ? "Race array values" : "Array values"}
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
             aria-invalid={!!error}
-            aria-describedby={error ? "input-error" : "input-help"}
+            aria-describedby={error ? errorId : helpId}
             autoComplete="off"
           />
           <Button
@@ -61,7 +65,7 @@ export function InputStudio({
             Apply
           </Button>
         </div>
-        <div id="input-help" className="input-help">
+        <div id={helpId} className="input-help">
           <span>Up to 48 values · −999 to 999 · empty arrays supported</span>
           <button type="button" className="text-button" onClick={onReset}>
             <RotateCcw size={12} />
@@ -71,7 +75,11 @@ export function InputStudio({
         <div className="generation-controls">
           <label>
             Example
-            <select value={preset} onChange={(e) => setPreset(e.target.value)}>
+            <select
+              aria-label={idPrefix ? "Race preset" : undefined}
+              value={preset}
+              onChange={(e) => setPreset(e.target.value)}
+            >
               {PRESETS.map((p) => (
                 <option key={p}>{p}</option>
               ))}
@@ -81,6 +89,7 @@ export function InputStudio({
             Length
             <input
               type="number"
+              aria-label={idPrefix ? "Race length" : undefined}
               min="0"
               max="48"
               value={length}
@@ -91,6 +100,7 @@ export function InputStudio({
             Min
             <input
               type="number"
+              aria-label={idPrefix ? "Race minimum" : undefined}
               min="-999"
               max="999"
               value={min}
@@ -101,6 +111,7 @@ export function InputStudio({
             Max
             <input
               type="number"
+              aria-label={idPrefix ? "Race maximum" : undefined}
               min="-999"
               max="999"
               value={max}
@@ -117,7 +128,7 @@ export function InputStudio({
           </Button>
         </div>
         {error && (
-          <p className="error" id="input-error" role="alert">
+          <p className="error" id={errorId} role="alert">
             {error}
           </p>
         )}

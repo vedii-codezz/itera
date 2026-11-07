@@ -6,7 +6,7 @@
 
 ## Implemented system
 
-Source-audited on 2026-11-08: Phases 1–4 form one browser-only React application. There is no server, HTTP API, database, router service, or remote persistence. Planning documents do not authorize implementation of the planned Race Mode.
+Source-audited on 2026-11-08: Phases 1–5 form one browser-only React application. There is no server, HTTP API, database, router service, or remote persistence. Planning documents do not authorize further development beyond an approved task.
 
 ```text
 InputStudio / target editor -> input validation -> registry definition.generate
@@ -72,4 +72,18 @@ Only `itera-theme` is stored in localStorage. Reduced motion follows the browser
 
 Vitest discovers `tests/**/*.test.{js,jsx}`; React tests opt into jsdom. Playwright independently discovers `e2e/`, uses installed headless Chrome, and defines desktop/mobile viewport projects. Historical and newly run checks are separated in [verification.md](verification.md).
 
-**Planned Phase 5:** race orchestration may compose two isolated controllers with identical cloned input and shared controls. No RaceSession module, race controller, comparison engine, or active race UI exists. Choose and document coordination semantics before implementation; see [Tasks](TASKS.md). Preserve immutable snapshots, supported metrics, cancellation, and deterministic retained navigation.
+Phase 5 Race Mode is implemented as described below. Phase 6 remains deferred.
+
+## Race Mode composition (Phase 5)
+
+[Race controller](../src/race/raceController.js) composes two existing playback controllers with independent generator instances and caches. It calls lane `next()` and `seek()`, never lane `play()`. One shared scheduler advances each unfinished lane once, reads both states, records a frozen index pair and publishes one coherent race view. The coordinator stores no duplicate snapshots.
+
+`src/components/race/` contains RaceMode, RacePlaybackControls, RaceLane and RaceSummary; [useRace](../src/hooks/useRace.js) subscribes to the coordinator and clears it on cleanup. RaceMode is lazily mounted on first entry and retained on navigation; leaving it pauses both lanes. InputStudio adds optional scoped IDs/accessible names, and SnapshotVisualization/SortingVisualization accept optional `scaleValues`. Playground defaults and all six generators remain unchanged.
+
+The paired history includes initial tick 0 and caps at 20,000 entries, independently of the existing 20,000 per-lane snapshot cap. Each pair stores only `{left,right}` indices. A terminal lane freezes; rewind restores the previous pair rather than decrementing both lane cursors. Current race completion and global knowledge of a completed retained timeline are separate. Final lane arrays/results are checked against a sorted copy of the initial input, including its values/multiplicities.
+
+Start/resume uses one timeout. Pausing, changing configuration, navigation away, manual navigation, clear or disposal invalidates scheduling using a cancellation epoch; loading also increments sessionId and disposes obsolete lanes. Healthy restart returns to retained tick 0; restart after failure reloads configuration. Chunked Finish advances paired ticks (up to 64/~8 ms per chunk) through the same coordinator, yielding between chunks and sharing the scheduler exclusively with timed playback. It cannot preempt one generator call.
+
+[Race comparison](../src/race/raceComparison.js) derives only supported current counters. Categories unsupported on both sides are omitted; a category supported on one side shows N/A on the other. Swaps and writes are not added. Both modes share the clock; the Operation Comparison mode emphasizes these counters. No CPU timing or universal operation-cost model exists. Lane explanations/pseudocode reuse registry definitions, and shared status announcements avoid per-frame live-region spam.
+
+Race source tests live in `tests/raceController.test.js`, `tests/raceComparison.test.js` and `tests/raceMode.test.jsx`; Chrome flows are in `e2e/race.spec.js`. See the append-only [verification record](verification.md).

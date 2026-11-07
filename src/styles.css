@@ -1803,3 +1803,345 @@ kbd {
     display: flex;
   }
 }
+/* Phase 5 extends the existing tokens and panels for a paired experiment. */
+.race-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 30px;
+  min-width: 0;
+}
+.race-workspace .page-intro {
+  margin-bottom: 8px;
+}
+.race-config {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 55px minmax(0, 1fr);
+  align-items: center;
+  gap: 15px 22px;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+.race-config label {
+  font-size: 10px;
+  color: var(--muted);
+}
+.race-config select {
+  display: block;
+  margin-top: 10px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  min-height: 42px;
+}
+.race-versus {
+  font:
+    italic 27px Georgia,
+    serif;
+  color: var(--accent);
+  text-align: center;
+  padding-top: 20px;
+}
+.race-config p {
+  grid-column: 1/-1;
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.8;
+}
+.race-mode-switch {
+  display: flex;
+  gap: 6px;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px;
+  border-radius: 5px;
+}
+.race-mode-switch button {
+  padding: 11px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: 11px;
+  color: var(--muted);
+  min-height: 42px;
+}
+.race-mode-switch button[aria-pressed="true"] {
+  background: var(--elevated);
+  color: var(--accent);
+  border-color: var(--border);
+}
+.race-method-note {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 850px;
+  margin: -8px 0 0;
+}
+.race-transport .playback-controls {
+  border-top: 0;
+}
+.race-scale-note {
+  font:
+    10px/1.8 Consolas,
+    monospace;
+  color: var(--muted);
+  margin-top: -4px;
+}
+.race-lanes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.race-lane {
+  min-width: 0;
+}
+.race-lane[data-complete="true"] {
+  border-color: var(--accent);
+}
+.race-lane-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.race-lane-heading .tiny-label {
+  font-size: 8px;
+  color: var(--muted);
+}
+.race-lane-heading h2 {
+  font-size: 20px;
+  font-weight: 400;
+  margin: 10px 0 0;
+}
+.lane-status {
+  font:
+    10px Consolas,
+    monospace;
+  color: var(--accent);
+}
+.race-lane > .panel {
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+}
+.race-lane > .panel .panel-heading {
+  height: 44px;
+}
+.race-lane .metrics-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.race-lane .metrics-grid dd {
+  font-size: 20px;
+}
+.race-lane .operation-context {
+  gap: 10px 15px;
+  line-height: 1.5;
+}
+.race-lane .state-legend {
+  min-height: 64px;
+  align-content: center;
+}
+.lane-complexity {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 15px 20px;
+  font-size: 9px;
+  color: var(--muted);
+}
+.lane-complexity strong {
+  font-family: monospace;
+  color: var(--text);
+  font-weight: 400;
+}
+.race-explanation {
+  border-top: 1px solid var(--border);
+  padding: 0 20px 18px;
+}
+.race-explanation > summary {
+  font-size: 10px;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 16px 0;
+  min-height: 44px;
+}
+.race-explanation > p {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 0 0 18px;
+}
+.race-explanation .pseudocode-panel {
+  border-radius: 4px;
+}
+.lane-output {
+  font-family: Consolas, monospace !important;
+  font-size: 10px !important;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+  margin-top: 16px !important;
+}
+.race-summary[data-final="true"] {
+  border-color: var(--accent);
+}
+.race-summary-intro {
+  padding: 17px 20px 10px;
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.race-summary-intro p {
+  margin: 0 0 9px;
+}
+.race-table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 0 20px;
+}
+.race-table-scroll table {
+  table-layout: fixed;
+  min-width: 450px;
+}
+.race-table-scroll th,
+.race-table-scroll td {
+  padding: 13px 12px;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.race-table-scroll thead {
+  background: var(--bg);
+}
+.race-table-scroll thead th {
+  color: var(--accent);
+  font-weight: 400;
+}
+.race-table-scroll tbody th {
+  font-weight: 400;
+  color: var(--muted);
+  width: 35%;
+}
+.race-observations {
+  padding: 22px 20px 5px;
+}
+.race-observations > .tiny-label {
+  font-size: 8px;
+  color: var(--accent);
+}
+.race-observations ul {
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--text);
+  margin: 12px 0;
+}
+.race-result {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 14px;
+  font:
+    11px/1.8 Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.race-observations .runtime-note {
+  padding: 8px 0 14px;
+}
+.race-lane-error {
+  padding: 0 20px;
+}
+.emphasize-operations .metrics-grid {
+  background: var(--elevated);
+}
+.emphasize-operations .metrics-grid dd {
+  color: var(--accent);
+}
+@media (max-width: 1100px) {
+  .race-lanes {
+    grid-template-columns: 1fr;
+  }
+  .race-lane .metrics-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .race-config {
+    padding: 17px;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+  }
+  .race-versus {
+    font-size: 22px;
+  }
+  .race-config select {
+    font-size: 12px;
+    padding: 11px 7px;
+  }
+  .race-mode-switch {
+    width: 100%;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .race-mode-switch button {
+    padding: 10px;
+    flex: 1;
+    font-size: 10px;
+  }
+  .race-workspace {
+    gap: 17px;
+  }
+  .race-method-note {
+    font-size: 10px;
+  }
+  .race-lane-heading {
+    padding: 17px 15px;
+  }
+  .race-lane-heading h2 {
+    font-size: 20px;
+  }
+  .race-lane .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .race-scale-note {
+    font-size: 9px;
+  }
+  .race-summary-intro {
+    padding: 15px;
+  }
+  .race-summary .panel-heading {
+    padding: 0 15px;
+  }
+  .race-summary .panel-heading .mono {
+    font-size: 9px;
+  }
+  .race-table-scroll {
+    padding: 0 15px;
+  }
+  .race-table-scroll th,
+  .race-table-scroll td {
+    font-size: 10px;
+    padding: 12px 9px;
+  }
+  .race-observations {
+    padding: 18px 15px 4px;
+  }
+  .race-observations ul {
+    font-size: 11px;
+  }
+  .race-explanation {
+    padding: 0 15px 15px;
+  }
+  .race-workspace .transport-buttons .button {
+    min-height: 44px;
+  }
+  .race-workspace .transport-buttons {
+    gap: 5px;
+  }
+}

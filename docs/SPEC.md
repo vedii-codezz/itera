@@ -10,7 +10,7 @@ Help CS students, DSA beginners, interview candidates, developers, and visual le
 
 ## Status and terminology
 
-Source inspection on 2026-11-08 confirms Phases 1–4 are implemented. Verification results are separate evidence: historical Phase 4 results and any newly executed checks are recorded in [verification.md](verification.md).
+Source inspection on 2026-11-08 confirms Phases 1–5 are implemented. Verification results are separate evidence: historical Phase 4 results and any newly executed checks are recorded in [verification.md](verification.md).
 
 - **Implemented:** present in the current source.
 - **Verified:** supported by a named check and its recorded run; not a guarantee for every browser or device.
@@ -18,17 +18,17 @@ Source inspection on 2026-11-08 confirms Phases 1–4 are implemented. Verificat
 - **Proposed:** an approach or model not yet implemented or approved as a final design.
 - **TODO:** an unresolved decision or unperformed check.
 
-| Feature             | Implemented behavior                                                                               | Status                                                            |
-| ------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Sorting             | Bubble, Insertion, Merge, Quick generators and SVG bars                                            | Implemented, Phases 3–4                                           |
-| Searching           | Sorted-input Binary Search, target editor, lo/mid/hi, leftmost match                               | Implemented                                                       |
-| Dynamic programming | Kadane current/best ranges, sums, and observed running-sum chart                                   | Implemented                                                       |
-| Inputs              | Custom arrays, eight presets, generation bounds, validation, reset                                 | Implemented                                                       |
-| Playback            | Play/pause/resume, previous/next, restart, beginning/end, 0.25×–4×, cached timeline                | Implemented                                                       |
-| Learning panels     | Registry pseudocode, deterministic explanations, variables, supported metrics, results, complexity | Implemented                                                       |
-| Interface           | Responsive layout, persisted themes, reduced motion, shortcut reference, accessible state table    | Implemented; broader accessibility/device coverage remains TODO   |
-| Race Mode           | Compare two sorting algorithms on identical input                                                  | Planned Phase 5; existing navigation is an unavailable-state page |
-| Algorithm Library   | Educational detail views                                                                           | Planned Phase 6; existing navigation is an unavailable-state page |
+| Feature             | Implemented behavior                                                                               | Status                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Sorting             | Bubble, Insertion, Merge, Quick generators and SVG bars                                            | Implemented, Phases 3–4                                                    |
+| Searching           | Sorted-input Binary Search, target editor, lo/mid/hi, leftmost match                               | Implemented                                                                |
+| Dynamic programming | Kadane current/best ranges, sums, and observed running-sum chart                                   | Implemented                                                                |
+| Inputs              | Custom arrays, eight presets, generation bounds, validation, reset                                 | Implemented                                                                |
+| Playback            | Play/pause/resume, previous/next, restart, beginning/end, 0.25×–4×, cached timeline                | Implemented                                                                |
+| Learning panels     | Registry pseudocode, deterministic explanations, variables, supported metrics, results, complexity | Implemented                                                                |
+| Interface           | Responsive layout, persisted themes, reduced motion, shortcut reference, accessible state table    | Implemented; broader accessibility/device coverage remains TODO            |
+| Race Mode           | Compare two sorting algorithms on identical input                                                  | Implemented Phase 5; four sorting choices, shared clock and paired history |
+| Algorithm Library   | Educational detail views                                                                           | Planned Phase 6; existing navigation is an unavailable-state page          |
 
 ## Current user stories and acceptance criteria
 
@@ -48,22 +48,22 @@ Browser-only React/Vite/JavaScript application; no backend, database, account, e
 
 Algorithm policies, metrics, and complexity remain as documented in the [README](../README.md#supported-algorithms) and [data model](DATA_MODEL.md).
 
-## Phase 5 Race Mode — planned, not implemented
+## Phase 5 Race Mode — implemented
 
 User story: compare two sorting algorithms on the same initial values without confusing animation timing with computational performance.
 
-Acceptance criteria for future approval/implementation:
+Implemented behavior and acceptance criteria:
 
 - Both lanes receive identical cloned input, isolate execution state, and clean up old work on input/algorithm changes and unmount.
 - Shared start/pause/resume/restart/speed controls have documented behavior when a lane completes first.
-- Explain synchronized-step progression and operation-count comparison. The latter is a proposed additional mode, not an existing feature or universal ranking.
+- Both Synchronized Steps and Operation Comparison share one paired clock. The second mode emphasizes supported recorded categories and never claims a universal ranking.
 - Show only supported counters, completion states, and a fair summary; do not claim one algorithm is universally faster from one visual race.
 - Use side-by-side lanes on desktop and stacked lanes on mobile, preserve dense-array readability, and add deterministic engine/UI and browser coverage.
 
-The proposed two-controller orchestration and `RaceSession` concept require design reconciliation before coding; neither exists in current source. Dependency-ordered work and open decisions are in [Tasks](TASKS.md).
+The implemented coordinator composes two existing controllers and records integer lane positions for each coordinated tick. Same-algorithm selection is allowed; each completed lane freezes while the other continues. Seeking restores a retained pair exactly. Errors stop scheduling; final outputs must each equal the correctly sorted original input before a successful summary. See [Architecture](ARCHITECTURE.md) and [Tasks](TASKS.md).
 
 ## Boundaries and TODOs
 
 Phase 5 excludes library expansion, new algorithms, unrelated redesigns, authentication, cloud accounts, databases, AI services, collaboration, arbitrary code execution, and backend benchmarking. Later library work, a demo GIF, and broader accessibility/browser audits require separate approval. Screenshots and keyboard help already exist.
 
-TODO: confirm Race Mode counting/normalization policy, whether the same algorithm may occupy both lanes, and any deadline, hosting provider, or budget constraint. No deadline or free-tier requirement is assumed.
+Race decisions are resolved: same-algorithm selection is supported; Operation Comparison is an emphasis mode over synchronized playback; there is no aggregate cost model. Hosting provider, budget and deadline remain unspecified. Physical-device, screen-reader and Safari/Firefox coverage remain TODO. No deadline or free-tier requirement is assumed.
