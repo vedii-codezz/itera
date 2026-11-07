@@ -75,3 +75,44 @@ An earlier browser run had a test selector ambiguity and a state reset while sou
 No incomplete Phase 4 requirements are known. Arrays remain limited to 48 integers; caching remains bounded at 20,000 frames. The chunk budget yields between snapshots and cannot preempt an individual generator call; the existing six generators yield frequently on bounded inputs. Dense arrays intentionally scroll inside their canvas. Generation errors preserve exact cached navigation while disabling further timed generation until reload.
 
 No physical-device, Safari/Firefox, or screen-reader testing is claimed. Screenshots exist; no demo GIF or live deployment exists. Phase 5 must wait for explicit approval.
+
+## Documentation reconciliation — 2026-11-08
+
+This dated entry is appended to the original Phase 4 report. All preceding verification content is preserved; historical test counts and browser results above are not relabeled as newly executed checks.
+
+### Scope and source audit
+
+Documentation-only integration against repository commit `c00ac8c`: merged the supplied README, created root `AGENTS.md`, and integrated `SPEC`, `DESIGN`, `ARCHITECTURE`, `DATA_MODEL`, `API`, and `TASKS` into their canonical `docs/*.md` locations. Supplied contributor instructions are reference material for future approved work, not authorization to start a development phase.
+
+Read the supplied eight files, existing README/docs/history, package scripts, source structure, registry, snapshot creation, controller, input/preferences, render/control integration and existing tests. Reconciled illustrative contracts with actual source:
+
+- Definition function is `generate`; registry methods are `get`, `list`, `register`.
+- Controller uses `next`, `previous`, `play`, `pause`, `clear` and the documented seek/end APIs; no invented stepForward/stepBackward/cancel methods.
+- Public playback fields are separate from private cache/iterator/timers. `complete`, `finalGenerated`, and `generating` have distinct meanings.
+- Recorded actual numeric bounds, metric support, final result shapes, Quick pivot/self-swap behavior, Binary leftmost/validation behavior, and Kadane empty/tie policies.
+- Replaced proposed theme/font values with actual CSS. Preserved all three supplied ASCII wireframes, labeled as references rather than current layouts.
+- Confirmed localStorage contains only `itera-theme`; reduced motion is a live media query. No database, HTTP API, backend or selected hosting provider was invented.
+- Keyboard help and screenshots already exist. RaceSession/two-lane orchestration remain proposed; all Phase 5 tasks stay unchecked. Library expansion remains later scope.
+
+Preserved the existing README's features, setup commands, algorithm policies, architecture, complexity/counting explanations, usage details and screenshots. Existing foundation/Phase 3/Phase 4 plans and image assets were left unchanged.
+
+### Checks executed for this documentation task
+
+| Check | Result |
+| --- | --- |
+| `npm test -- --run --no-file-parallelism` | 196 tests passed across 6 files; sequential file execution, unchanged assertions |
+| `npm run lint` | Passed, no errors or warnings |
+| `npm run build` | Passed, 2,008 modules transformed |
+| Required documentation paths | All present: README, AGENTS, six planning documents and this history |
+| Markdown links and paths | All local document links, source/directory paths, screenshot links and referenced heading anchors resolve |
+| Supplied wireframes | All 3 preserved verbatim, allowing line-ending normalization |
+| Historical verification prefix | Unchanged; additions only |
+| Task/phase consistency | Phases 1–4 implemented; Phase 5 planned with no checked implementation tasks |
+| Git scope review | Only README, AGENTS and Markdown under docs changed; no application/test/config/dependency/asset changes |
+| Browser tests / new visual session | Not run; documentation-only task and browser suite regenerates PNG screenshots outside the permitted Markdown scope |
+
+The 14 Chrome browser cases described earlier remain historical reported results. No physical-device, Safari/Firefox or screen-reader verification is newly claimed. No failed checks occurred during this documentation task. No commit, push, deployment or Phase 5 implementation was performed.
+
+### Remaining planning TODOs
+
+Race Mode still needs an approved comparison/counting policy, same-algorithm selection decision, and confirmation of whether operation comparison is a separate mode. Hosting target, budget/free-tier constraints and deadline are unspecified rather than assumed. Broader accessibility, screen-reader, physical-device and Safari/Firefox checks remain future work. These TODOs do not imply missing Phase 4 implementation or permission to start further development.

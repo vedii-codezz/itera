@@ -1,14 +1,35 @@
-# itera.
+# Itera
 
 **See the logic. Follow the flow.**
 
 A browser-only algorithm learning laboratory built with React, Vite, JavaScript, Tailwind CSS, Motion for React, Lucide, and SVG.
+
+## Audience and purpose
+
+For CS students, DSA beginners, interview candidates, developers, and visual learners. Static examples hide how algorithm state changes; Itera lets learners inspect exact execution states, replay decisions, and connect visual changes to pseudocode.
+
+## Documentation
+
+| Document                                     | Purpose                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| [Specification](docs/SPEC.md)                | Current features, acceptance criteria, and planned boundaries        |
+| [Design](docs/DESIGN.md)                     | Actual tokens, typography, layout and preserved reference wireframes |
+| [Architecture](docs/ARCHITECTURE.md)         | Existing modules, responsibilities, cache and cancellation           |
+| [Data model](docs/DATA_MODEL.md)             | Exact in-memory snapshot, metadata, result and playback shapes       |
+| [Internal API](docs/API.md)                  | Source-level module contracts; no HTTP API                           |
+| [Tasks](docs/TASKS.md)                       | Reconciled completed work and unchecked Phase 5 backlog              |
+| [Contributor guide](AGENTS.md)               | AI-assisted development and documentation conventions                |
+| [Verification history](docs/verification.md) | Historical evidence and separately dated new checks                  |
+
+Existing [foundation plan](docs/implementation-plan.md), [Phase 3 plan](docs/superpowers/plans/2026-11-07-phase-3.md), and [Phase 4 plan](docs/superpowers/plans/2026-11-07-phase-4.md) are preserved as historical records. Their task-specific approval restrictions are not new development requests.
 
 ## Current scope
 
 **Phases 1–4 are implemented.** All six generators now power the interactive React playground: full playback controls, snapshot-driven sorting/search/Kadane SVGs, synchronized registry pseudocode, deterministic explanations, algorithm-specific metrics, results, and complexity information. Race Mode and the educational library remain deferred.
 
 The original responsive shell, branding, themes, validation, eight input presets, and reset remain in place. Desktop and mobile Chrome browser verification is covered by the repeatable Playwright suite. Screenshots are included below.
+
+Source reconciliation on 2026-11-08 confirms this implemented scope. The existing Phase 4 verification report records 196 automated tests, 14 Chrome browser cases, lint and build passing; those are historical results. Fresh documentation-task checks and any skips are recorded separately in the verification history. Phase 5 Race Mode remains planned; its navigation page is not a working comparison mode.
 
 ## Local development and verification
 
@@ -23,6 +44,8 @@ npm run build
 npm run test:browser
 npm run preview
 ```
+
+For the same automated suite without concurrent test files, use `npm test -- --run --no-file-parallelism`; this can avoid resource-contention timeouts without changing assertions. Browser tests require installed Chrome and regenerate the screenshots, so they are not automatically rerun during Markdown-only maintenance.
 
 Vite prints the local URL. The production build is written to `dist/`. Deploy that directory to a static host only when authorized. No server, authentication, API keys, environment variables, or external AI services are required. No deployment has been created.
 
@@ -120,7 +143,7 @@ Every snapshot clones O(n) array/metadata state; a trace of S snapshots therefor
 
 ## Playback compatibility and limits
 
-Verified with all six production generators: stepping, exact backward restoration, seeking, restart, completion, cancellation, algorithm switching, input replacement, and default cache capacity.
+Historical Phase 4 tests covered all six production generators: stepping, exact backward restoration, seeking, restart, completion, cancellation, algorithm switching, input replacement, and default cache capacity.
 
 The controller owns timed playback and chunk scheduling. Those modes are mutually exclusive. Play/pause/resume and live speed changes (0.25×–4×) remain separate from generators. Input or algorithm replacement closes the suspended generator and cancels pending timers/chunks. Cached replay stops at its actual final frame. `state.finalGenerated` records a known final algorithm frame even before iterator exhaustion; `state.generating` identifies an active chunked end request.
 
