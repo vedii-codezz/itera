@@ -70,7 +70,7 @@ test("all six algorithms finish with real results and synchronized pseudocode", 
   await page.getByRole("button", { name: "Next step", exact: true }).click();
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
-    path: `docs/media/phase4-${testInfo.project.name}.png`,
+    path: `docs/media/phase55-playground-interaction-${testInfo.project.name}.png`,
     fullPage: true,
   });
 });
@@ -238,7 +238,10 @@ test("navigation pauses execution while preserving the workspace", async ({
   await input(page, "3, 2, 1");
   await page.getByRole("button", { name: "Play", exact: true }).click();
   await page.getByRole("button", { name: /About Itera/ }).click();
-  await page.getByRole("button", { name: /Playground/ }).click();
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("button", { name: "Playground", exact: true })
+    .click();
   await expect(
     page.getByLabel("Execution status", { exact: true }),
   ).not.toHaveText("Playing");

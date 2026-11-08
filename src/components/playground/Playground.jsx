@@ -16,7 +16,7 @@ import { algorithmRegistry } from "../../engine/algorithmRegistry.js";
 import { parseArray } from "../../utils/input.js";
 const INITIAL = [42, 18, 65, 31, 87, 12, 56, 73, 24, 94, 38, 61];
 const algorithms = algorithmRegistry.list();
-export function Playground({ active = true }) {
+export function Playground({ active = true, selection = null }) {
   const [id, setId] = useState("bubble-sort"),
     [values, setValues] = useState(INITIAL),
     [text, setText] = useState(INITIAL.join(", "));
@@ -32,6 +32,13 @@ export function Playground({ active = true }) {
   useLayoutEffect(() => {
     controller.load(algorithm.generate, values, { target });
   }, [algorithm, values, target, controller]);
+  useEffect(() => {
+    if (selection) {
+      controller.pause();
+      setId(selection.id);
+      setTargetError("");
+    }
+  }, [selection, controller]);
   useEffect(() => {
     if (!active) controller.pause();
   }, [active, controller]);
@@ -113,14 +120,9 @@ export function Playground({ active = true }) {
     <>
       <div className="page-intro">
         <div>
-          <span className="eyebrow">THINK IN STEPS. SEE THE DIFFERENCE.</span>
-          <h1>
-            Make sense of <em>the sequence.</em>
-          </h1>
-          <p>
-            Take an algorithm apart. Follow every decision, one operation at a
-            time.
-          </p>
+          <span className="eyebrow">// THE ALGORITHM LAB</span>
+          <h1>Make sense of the steps.</h1>
+          <p>Watch algorithms transform data, one operation at a time.</p>
         </div>
         <span className="intro-number">
           01<span> / LAB</span>
@@ -207,17 +209,18 @@ export function Playground({ active = true }) {
           {targetError || state.error}
         </div>
       )}
+      <InputStudio
+        text={text}
+        onTextChange={edit}
+        onApply={apply}
+        onCommit={commit}
+        onReset={() => commit([...INITIAL])}
+        error={error}
+        onError={setError}
+      />
+      <Statistics algorithm={algorithm} snapshot={state.snapshot} />
       <div className="workspace-grid execution-workspace">
         <div className="primary-column">
-          <InputStudio
-            text={text}
-            onTextChange={edit}
-            onApply={apply}
-            onCommit={commit}
-            onReset={() => commit([...INITIAL])}
-            error={error}
-            onError={setError}
-          />
           <Panel
             title={algorithm.name}
             eyebrow="02 / EXECUTE"
@@ -248,7 +251,6 @@ export function Playground({ active = true }) {
               dirty={dirty}
             />
           </Panel>
-          <Statistics algorithm={algorithm} snapshot={state.snapshot} />
           <div className="keyboard-help">
             <Command size={14} />
             <span>

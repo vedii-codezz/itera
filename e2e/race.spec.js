@@ -265,7 +265,7 @@ test("themes motion navigation and screenshots retain the paired workspace", asy
     .click();
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
-    path: `docs/media/phase5-${info.project.name}.png`,
+    path: `docs/media/phase55-race-interaction-${info.project.name}.png`,
     fullPage: true,
   });
 });

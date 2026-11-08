@@ -182,11 +182,6 @@ export function RaceMode({ active = true }) {
           Apply.
         </p>
       )}
-      <RacePlaybackControls
-        state={state}
-        controller={controller}
-        dirty={dirty}
-      />
       <div className="race-scale-note">
         Shared value scale:{" "}
         {values.length
@@ -212,6 +207,11 @@ export function RaceMode({ active = true }) {
           speed={state.speed}
         />
       </div>
+      <RacePlaybackControls
+        state={state}
+        controller={controller}
+        dirty={dirty}
+      />
       <RaceSummary state={state} />
       <p className="keyboard-help">
         Space: start/pause · ← / →: paired steps · R: restart. Focused controls

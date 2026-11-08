@@ -96,7 +96,7 @@ export function ExplanationPanel({ snapshot, error, dirty }) {
         <span className="operation-badge" aria-label="Current operation">
           {snapshot?.operation || "validation"}
         </span>
-        <p aria-label="Current explanation" aria-live="polite">
+        <p aria-label="Current explanation">
           {error
             ? `Execution is unavailable: ${error}`
             : snapshot?.explanation || "Choose valid input to begin."}

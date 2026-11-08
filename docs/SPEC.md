@@ -28,7 +28,7 @@ Source inspection on 2026-11-08 confirms Phases 1–5 are implemented. Verificat
 | Learning panels     | Registry pseudocode, deterministic explanations, variables, supported metrics, results, complexity | Implemented                                                                |
 | Interface           | Responsive layout, persisted themes, reduced motion, shortcut reference, accessible state table    | Implemented; broader accessibility/device coverage remains TODO            |
 | Race Mode           | Compare two sorting algorithms on identical input                                                  | Implemented Phase 5; four sorting choices, shared clock and paired history |
-| Algorithm Library   | Educational detail views                                                                           | Planned Phase 6; existing navigation is an unavailable-state page          |
+| Algorithm Library   | Educational detail views                                                                           | Phase 5.5 registry-only catalog/detail implemented; expanded education deferred          |
 
 ## Current user stories and acceptance criteria
 
@@ -67,3 +67,9 @@ The implemented coordinator composes two existing controllers and records intege
 Phase 5 excludes library expansion, new algorithms, unrelated redesigns, authentication, cloud accounts, databases, AI services, collaboration, arbitrary code execution, and backend benchmarking. Later library work, a demo GIF, and broader accessibility/browser audits require separate approval. Screenshots and keyboard help already exist.
 
 Race decisions are resolved: same-algorithm selection is supported; Operation Comparison is an emphasis mode over synchronized playback; there is no aggregate cost model. Hosting provider, budget and deadline remain unspecified. Physical-device, screen-reader and Safari/Firefox coverage remain TODO. No deadline or free-tier requirement is assumed.
+
+## Phase 5.5 implemented presentation scope
+
+The Stitch-inspired interface supports both themes across Playground, Race, registry catalog/detail and About. Canonical brand colors and contrast-sensitive variants are documented in [Design](DESIGN.md). The catalog filters the six registered algorithms and opens their existing Playground execution. Detail content is limited to registry metadata and pseudocode; the broader Phase 6 educational library is deferred. No algorithm or coordination functionality is added.
+
+Navigation stays local and in memory; there are no new URL routes. Mobile navigation reserves safe-area space; dense arrays scroll inside the canvas. Screenshots are references, with deliberate corrections for falsely dark light screens, unsupported mock controls, algorithm variants, and benchmark claims.

@@ -65,7 +65,7 @@ The approved Phase 5 brief resolved same-algorithm selection and comparison-mode
 - [ ] Conduct a screen-reader session and expanded keyboard/contrast/accessibility audit.
 - [ ] Verify Safari and Firefox rendering.
 - [ ] Test physical mobile devices.
-- [ ] Build Algorithm Library detail views after approval (Phase 6).
+- [ ] Expand Algorithm Library educational content after approval (Phase 6); registry-only presentation is available in Phase 5.5.
 - [ ] Create a verified demo GIF; screenshots already exist.
 - [ ] Choose a hosting target and add provider-specific deployment steps if requested. Generic static build/hosting guidance already exists.
 - [ ] Consider additional algorithms only after a separately approved specification.
@@ -76,3 +76,12 @@ The approved Phase 5 brief resolved same-algorithm selection and comparison-mode
 - [x] Allow the same sorting algorithm in both lanes with deterministic independent state.
 - [x] Provide Operation Comparison as a separate emphasis mode sharing synchronized playback/history.
 - [ ] Confirm a deployment provider, budget/free-tier constraint, or deadline only if the user requires one; none is assumed.
+
+## Phase 5.5 — Stitch presentation redesign
+
+- [x] Audit both archives and current source; baseline 240 automated tests, lint and build pass.
+- [x] Canonical palette, contrast-sensitive themes, self-hosted reference fonts and reusable workbench styling.
+- [x] Desktop header, mobile bottom navigation, existing workspace preservation and selected-algorithm handoff.
+- [x] Live Playground and paired Race presentation; execution engine retained.
+- [x] Registry-only catalog/detail and accurate About presentation (expanded Phase 6 content deferred).
+- [x] Final verification evidence is recorded separately in [verification history](verification.md).

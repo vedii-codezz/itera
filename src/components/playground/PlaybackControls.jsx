@@ -110,7 +110,7 @@ export function PlaybackControls({ state, controller, dirty }) {
             ? "total"
             : "generated · more on demand"}
         </span>
-        <span className="execution-status" aria-label="Execution status">
+        <span className="execution-status" aria-label="Execution status" role="status">
           {executionStatus(state, dirty)}
         </span>
       </div>

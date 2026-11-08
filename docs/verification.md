@@ -171,3 +171,44 @@ README, SPEC, DESIGN, ARCHITECTURE, DATA_MODEL, API and TASKS now describe imple
 Limits remain 48 integers in `[-999,999]`, 20,000 snapshots per lane and 20,000 paired entries, without eviction. A chunk budget cannot preempt a generator call; the six existing bounded-input generators yield frequently. Input drafts pause immediately but replace both committed executions only on Apply; invalid drafts retain the previous valid pair with an explicit notice. Race data is memory-only, and retained workspaces reset on browser reload.
 
 Chrome mobile viewport testing is not a physical-device test. Safari/Firefox, actual screen-reader sessions, physical devices and broader contrast/WCAG certification remain unverified. No known Phase 5 acceptance requirement is incomplete. The Algorithm Library and Phase 6 remain deferred until explicit approval. No commit, push or deployment was performed for Phase 5.
+## 2026-11-08 — Phase 5.5 Stitch UI integration
+
+### Scope and implementation
+
+Implemented the presentation redesign in the existing application: horizontal desktop shell and safe-area mobile bottom navigation; canonical six-color tokens with accessible semantic variants; locally served Space Grotesk, Geist and JetBrains Mono; full-width Playground input/live metrics and canvas/inspector grid; paired Race styling and shared transport below the lanes; registry-only searchable/category-filtered catalog and metadata detail views; accurate About pipeline. Theme restoration runs before React using the existing stored preference. Per-frame explanation announcements were removed; execution status announces state changes.
+
+Changed implementation files: `src/App.jsx`, `src/styles.css`, `src/components/InformationPages.jsx`, `src/components/playground/Playground.jsx`, `LivePanels.jsx`, `PlaybackControls.jsx`, `src/components/race/RaceMode.jsx`, `index.html`, `public/favicon.svg`, and local font assets/licenses. Added `tests/navigation.test.jsx` and `e2e/redesign.spec.js`; existing browser assertions remain, with the Playground navigation selector scoped to main navigation and screenshot paths moved to Phase 5.5 names. Playwright accepts optional `ITERA_TEST_PORT`; default remains 5173. No package/lockfile, generator, snapshot, registry, controller, race coordination or hook implementation changed. Catalog-to-Playground selection is a minimal presentation handoff, covered by tests.
+
+### Fresh baseline and final checks
+
+Node v24.19.0. Initial worktree was clean.
+
+| Check executed now | Result |
+| --- | --- |
+| Baseline `npm test -- --run` | 240 tests / 9 files passed |
+| Baseline lint and production build | Both passed |
+| Final `npm test -- --run` after formatting | 242 tests / 10 files passed |
+| Final `npm run lint` | Passed |
+| Final `npm run build` | Passed; JS 429.11 kB / gzip 136.49 kB; CSS 52.34 kB / gzip 10.94 kB |
+| Final `$env:ITERA_TEST_PORT='5174'; npm run test:browser` | 28 Chrome cases passed in 2.0m |
+| Relative Markdown link scan and `git diff --check` | Passed |
+
+Two new automated regressions cover registry detail → selected Playground and filter/empty catalog behavior. They failed on the missing features before implementation and passed afterward. Four new browser cases cover all five page types in both themes, computed background colors, selected-algorithm links, filtering and containment at 320/768px in addition to the configured 1440×1000 desktop and 390×844 mobile projects. Existing checks cover all six algorithms, input/target validation, empty input, live supported metrics, pseudocode synchronization, playback cancellation, seek/rewind/cached completion, coordinated races, equal scaling, dense native scrolling, reduced motion and theme persistence. No assertions were removed or loosened.
+
+### Failures encountered and resolved
+
+The first browser launch could not connect to the sandbox server, then found port 5173 occupied. An accessible local preview on 5174 and the optional test-port setting resolved this. Initial redesign checks found an inset scroll region narrower than the existing SVG observer width; removing that inset restored small-array containment without changing renderer logic. A broad `/Playground/` selector matched the new About launch action as well as navigation; scoping it to main navigation retained the original assertion. One later rerun timed out on mobile Race after formatting caused Vite to reload into Playground; its captured page showed the reset. The final source-stable full run passed all 28 cases. No check remains failing or skipped.
+
+### Visual evidence and deliberate deviations
+
+Inspected all 18 supplied PNGs, supporting HTML and both copies of the exported design document. Desktop has Playground/Race/Library/Detail/About dark/light; mobile has Playground/Race/Library/Detail dark/light. About mobile was not supplied. All runtime page/theme combinations have fresh `docs/media/phase55-*` captures, including About mobile adaptations and interaction screenshots. Historical Phase 4/5 images were restored byte-for-byte and remain unchanged. The live preview was also inspected in the in-app browser at port 5174.
+
+Side-by-side normalized reference/implementation sheets were inspected, alongside full-size implementation captures. References have differing pixel widths and static mid-execution states; implementation captures show actual initial/selected states. This is an adaptive visual integration, not a same-state pixel comparison or pixel-perfect certification. Longer mobile pages retain real input controls, descriptive registry pseudocode and accessible tables. Detail deliberately links to the existing Playground instead of duplicating an execution sandbox. Catalog previews show actual first pseudocode instructions instead of mock execution diagrams.
+
+Canonical colors override export approximations. The mobile light references are dark; the actual light background was verified as `rgb(241, 237, 230)`, dark as `rgb(11, 11, 14)`. Unsupported algorithms/dual-pivot Quick Sort, account/global-search chrome, benchmark/certification numbers and invented worker/runtime claims are omitted. Contrast calculations and token values are in DESIGN. No console/page errors were reported by the final browser checks.
+
+### Documentation and limits
+
+README, DESIGN, ARCHITECTURE, SPEC, TASKS, this appended history, the Phase 5.5 plan and root design-QA report record the implementation and deviations. Library/detail content is limited to existing registry metadata; expanded Phase 6 educational content remains deferred. No new algorithms, backend, authentication, AI services, dependencies, infrastructure, commit, push or deployment were added.
+
+Physical devices, actual screen-reader sessions, Safari and Firefox were not tested; no WCAG certification is claimed. Native SVG scrolling remains necessary for dense arrays and may be needed for even small arrays at 320px because the existing renderer has a 320px minimum. No unresolved functional acceptance failure was found. Visual fidelity is intentionally qualified by the deviations above.

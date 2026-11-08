@@ -87,3 +87,9 @@ Start/resume uses one timeout. Pausing, changing configuration, navigation away,
 [Race comparison](../src/race/raceComparison.js) derives only supported current counters. Categories unsupported on both sides are omitted; a category supported on one side shows N/A on the other. Swaps and writes are not added. Both modes share the clock; the Operation Comparison mode emphasizes these counters. No CPU timing or universal operation-cost model exists. Lane explanations/pseudocode reuse registry definitions, and shared status announcements avoid per-frame live-region spam.
 
 Race source tests live in `tests/raceController.test.js`, `tests/raceComparison.test.js` and `tests/raceMode.test.jsx`; Chrome flows are in `e2e/race.spec.js`. See the append-only [verification record](verification.md).
+
+## Phase 5.5 presentation integration
+
+`App.jsx` retains in-memory page navigation and keeps visited Playground/Race workspaces mounted; inactive workspaces pause through the existing `active` prop. A selection request passes the registry ID to Playground without remounting its controller. `InformationPages.jsx` reads frozen registry metadata for searchable/category-filtered cards, detail pseudocode/complexity and accurate About content. No router package or duplicated snapshots were introduced.
+
+The shared header becomes bottom navigation on mobile; CSS reserves safe-area space. `index.html` applies the existing saved theme before React, and `useTheme` remains the sole theme state owner. Self-hosted font assets require no external runtime service. `ITERA_TEST_PORT` optionally selects the Playwright server port (default 5173). Generators, snapshot fields, renderer mappings and both controller implementations remain unchanged.
